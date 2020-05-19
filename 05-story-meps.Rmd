@@ -376,5 +376,14 @@ In this case we can notice an interesting influence of the variable OBDRVY1. For
 
 ## Summary and conclusions 
 
+Zdanie, że wyjaśnialność daje dużo możliwości?
 
-Scripts and list of selected variables are available at: [meps_story github](https://github.com/lorenckat/meps_story).
+The data on which the analysis has been carried out covers the entire population of the United States of America. Depending on age, education, gender, and many other agents, people take different approaches to looking after their health. 
+
+(?) Rozważaliśmy ludzi zdrowych i chorych w różnym wieku? - Wnioski na podstawie instance level? (?)  
+The presented model shows that the frequency of visits to doctors as well as the length of hospitalization have the greatest influence on the forecasting of medical expenses. Indeed, medical problems are only an indirect factor.  
+
+(?)W podejściu biznesowym, na miejscu firmy ubezpieczeniowej warto podjąć próbę estymacji ilości dni w szpitalu czy wizyy na podstawie choroby czy danych demograficznych. Takie podejście według nas pozwoli na lepszą wycenę.. (?)
+
+## References
+Przemysław Biecek, Tomasz Burzykowski, *Explanatory Model Analysis: Explore, Explain and Examine Predictive Models*, https://pbiecek.github.io/ema/preface.html
