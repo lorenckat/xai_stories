@@ -38,7 +38,7 @@ The data processing and analysis were carried out in Python 3.7.3 and R 3.6.1.
 ## Model
 
 ### Data
-Agency of Healthcare Research and Quality provides an extensive database of medical expenses. Consequently, dataset selection on which we will make further analysis was an important first step. We decided to choose the two latest panels. Expenditures for treatment that we will examine in the following chapter apply to the years 2015/2016 and 2016/2017. The selected dataset contains information on over 32,000 patients, and each of them is described by 3,700 variables. We attached great importance to choosing features that would be appropriate for the prediction. The most important criterion adopted is that the variable cannot relate to expenditure associated with any treatment. For this purpose, we looked through several hundred of them and selected 387 most suitable.
+[Agency of Healthcare Research and Quality](https://www.ahrq.gov/) provides an extensive database of medical expenses. Consequently, dataset selection on which we will make further analysis was an important first step. We decided to choose the two latest panels. Expenditures for treatment that we will examine in the following chapter apply to the years 2015/2016 and 2016/2017. The selected dataset contains information on over 32,000 patients, and each of them is described by 3,700 variables. We attached great importance to choosing features that would be appropriate for the prediction. The most important criterion adopted is that the variable cannot relate to expenditure associated with any treatment. For this purpose, we looked through several hundred of them and selected 387 most suitable.
 
 As a part of the preprocessing, we removed records that were marked as *Inapplicable* in the expenditure column.  The number of people who didn't incur expenses is 5504, while the number of patients with "inapplicable" is 407, the percentage respectively are 17% and 1%. The following figures show the distribution of the explained variable.
 
@@ -78,24 +78,24 @@ Obtained variables mainly concern the number of visits to specialists.  For a mo
 knitr::include_graphics('images/05-mind_map.png')
 ```
 
-| Variable | Description |
-|--------------|--------------|
-| *IPNGTDY1*| number of nights associated with hospital discharges | 
-| *OBDRVY1*| number of office-based physician visits | 
-| *HHAGDY1*| agency home health provider days| 
-| *DSFTNV5*|indicate whether the respondent reported having his or her feet checked for sores or irritations | 
-| *OBOTHVY1*| office-based non-physican visits | 
-| *PSTATS2*| person disposition status|  
-| *OPOTHVY1*| outpatient dept non-dr visits |
-|*AGE2X*| age of patient|
-|*RACEV2X*| race of patient|
-|*SEX*| patient's gender|
-|*HIDEG*| the highest degree of education attained at the time the individual entered MEPS|
-|*diab_disease*| indicates whether the patient suffered from a diabetes disease |
-|*art_disease* | indicates whether the patient suffered from a arthritis disease |
-|*ast_disease*| indicates whether the patient suffered from a asthma disease |
-|*press_disease* |  indicates whether the patient suffered from a high pressure disease|
-|*heart_disease*|  indicates whether the patient suffered from a heart disease|
+| Variable |New Name| Description | 
+|--|--|----------------|
+| `IPNGTDY1`| `hospital_nights`|number of nights associated with hospital discharges | 
+| `OBDRVY1`|`phys_visits` |number of office-based physician visits | 
+| `HHAGDY1`|`home_days` |agency home health provider days| 
+| `DSFTNV5`|`feet_checked`  |indicate whether the respondent reported having his or her feet checked for sores or irritations | 
+| `OBOTHVY1`|`non-phys_visits` |office-based non-physican visits | 
+| `PSTATS2`|`disposition` |person disposition status|  
+| `OPOTHVY1`|`outpatient_visits` |outpatient dept non-dr visits |
+|`AGE2X`|`age` |age of patient|
+|`RACEV2X`|`race`|race of patient|
+|`SEX`|`sex` |patient's gender|
+|`HIDEG`|`edu` |the highest degree of education attained at the time the individual entered MEPS|
+|`diab_disease`|`diab_disease` |indicates whether the patient suffered from a diabetes disease |
+|`art_disease`|`art_disease`|indicates whether the patient suffered from a arthritis disease |
+|`ast_disease`|`ast_disease` |indicates whether the patient suffered from a asthma disease |
+|`press_disease`|`press_disease`  |indicates whether the patient suffered from a high pressure disease|
+|`heart_disease`|`heart_disease`  |indicates whether the patient suffered from a heart disease|
 Table: A review of selected variables
 
 In the following section we will explain the Gradient Boosting model based on 16 variables presented in the table above. The coefficient of determination of the final model is 0.5
@@ -109,11 +109,11 @@ TODO: zaktualizowac wartosci R^2
 
 In order to find out about the influence of individual variables on the prediction for each patient, we present a Permutation Variable Importances graph.
 
-```{r, cache=FALSE, out.width = "600", fig.align="center",fig.cap = "Permutation Variable Importances for Gradient Boosting Regressor",echo=FALSE}
+```{r permutation, cache=FALSE, out.width = "600", fig.align="center",fig.cap = "Permutation Variable Importances for Gradient Boosting Regressor",echo=FALSE}
 knitr::include_graphics('images/05-perm_imp.png')
 ```
-
-Undoubtedly, the most important is the variable that indicates the number of nights spent in the hospital by the patient. An interesting observation seems to us that the demographic variable - AGE, which initially did not have a significant impact on the prediction, on the reduced model is in the top five most important variables. The remaining demographic variables, as well as those relating to diseases, do not show a gain in relevance in a model reduced to several variables.
+In the figure \@ref(fig:permutation) we present the 6 most relevant variables. Features for which the median of Permutation Variable Importances was less than 0.01 were omitted.
+Undoubtedly, the most important is the variable that indicates the number of nights spent in the hospital by the patient. An interesting observation seems to us that the demographic variable - age, which initially did not have a significant impact on the prediction, on the reduced model is in the top five most important variables. The remaining demographic variables, as well as those relating to diseases, do not show a gain in relevance in a model reduced to several variables.
 
 Based on previous analyzes, the number of nights spent in the hospital turned out to be the most important variable. To understand the nature of its impact on prediction in our model, it's worth looking at the Partial Dependence Profiles. Below we present the PD plots broken down by gender.
 
@@ -122,7 +122,7 @@ Based on previous analyzes, the number of nights spent in the hospital turned ou
 knitr::include_graphics('images/05-pdp_hosp.png')
 ```
 Among patients who spent a few nights in the hospital, gender is not important for the amount of prediction. This rule begins to change after exceeding 30 nights. 
-The PD profile for men has significantly higher values compared to the women's profile, despite the similar curve behavior. After exceeding  70 nights in the hospital, this variable does not affect the result returned by the model on average.
+The PD profile for men has significantly higher values compared to the women's profile, despite the fact that variable `age` doesn't show much influence on the model. After exceeding  70 nights in the hospital, this variable does not affect the result returned by the model on average.
 
 ###  Instance Level Explainations - business approach
 
@@ -375,5 +375,6 @@ knitr::include_graphics('images/05-ct_OBDRVY1.PNG')
 In this case we can notice an interesting influence of the variable OBDRVY1. For patient 1 the higher the number of office-based physician visits the higher would be the predicted outcome of our model. This is different for patient 2, for whom the predicted value is not changing, sometimes it is even declining.
 
 ## Summary and conclusions 
-All key information about the final model we will put in this section.
+
+
 Scripts and list of selected variables are available at: [meps_story github](https://github.com/lorenckat/meps_story).
