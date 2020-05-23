@@ -102,18 +102,21 @@ In the following section we will explain the Gradient Boosting model based on 16
 
 TODO: zaktualizowac wartosci R^2
 
-## Explanations 
+## Model Level Explainations
 
 
-### Model Level Explainations
+### Permutation Variable Importances
 
 In order to find out about the influence of individual variables on the prediction for each patient, we present a Permutation Variable Importances graph.
 
 ```{r permutation, cache=FALSE, out.width = "600", fig.align="center",fig.cap = "Permutation Variable Importances for Gradient Boosting Regressor",echo=FALSE}
 knitr::include_graphics('images/05-perm_imp.png')
 ```
+
 In the figure \@ref(fig:permutation) we present the 6 most relevant variables. Features for which the median of Permutation Variable Importances was less than 0.01 were omitted.
 Undoubtedly, the most important is the variable that indicates the number of nights spent in the hospital by the patient. An interesting observation seems to us that the demographic variable - age, which initially did not have a significant impact on the prediction, on the reduced model is in the top five most important variables. The remaining demographic variables, as well as those relating to diseases, do not show a gain in relevance in a model reduced to several variables.
+
+### Partial Dependence Profiles
 
 Based on previous analyzes, the number of nights spent in the hospital turned out to be the most important variable. To understand the nature of its impact on prediction in our model, it's worth looking at the Partial Dependence Profiles. Below we present the PD plots broken down by gender.
 
@@ -121,28 +124,56 @@ Based on previous analyzes, the number of nights spent in the hospital turned ou
 ```{r, cache=FALSE, out.width = "600", fig.align="center",fig.cap = "Partial Dependence Profiles for number of nights spent in the hospital broken down by gender ",echo=FALSE}
 knitr::include_graphics('images/05-pdp_hosp.png')
 ```
+
 Among patients who spent a few nights in the hospital, gender is not important for the amount of prediction. This rule begins to change after exceeding 30 nights. 
 The PD profile for men has significantly higher values compared to the women's profile, despite the fact that variable `age` doesn't show much influence on the model. After exceeding  70 nights in the hospital, this variable does not affect the result returned by the model on average.
 
-###  Instance Level Explainations - business approach
+##  Instance Level Explainations 
 
+### Business approach
 
-In this subsection we will try to show the application of explanatory methods in the business approach. Selected observations are:
-1) the person with the best estimated cost among people with results greater than 3000,
-2) the person for whom the model predicted the highest cost of all. Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
+In this subsection we will try to show the application of explanatory methods in the business approach. Selected observations are: 
+
+1. the person with the best estimated cost among people with results greater than 3000,
+2. the person for whom the model predicted the highest cost of all.
+
+Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
 Such conclusions may also be useful for the patients themselves, who have decided to pay for medical care themselves.
 
 #### XIA for the best prediction
 
-Prediction of medical costs for first observation is 3882\$ and is differed from the real value by 4.8\$.
+Prediction of medical costs for first observation is 3886.804\$ and is differed from the real value by 4.8\$. \\
+The patient's characteristics are presented below.
 
-####   XIA for the best prediction using Break Down Plots
+| Variable |Value| 
+|--|--|----------------|
+|`hospital_nights`|0|
+|`phys_visits`| 4|
+|`home_days`|0|
+|`feet_checked`|-1|
+|`non-phys_visits`| 1|
+|`disposition` |11-hausehold|
+|`outpatient_visits`|0|
+|`age`|58|
+|`race`|1|
+|`sex`| 2| 
+|`edu`| 7-other|
+|`diab_disease`|1|
+|`art_disease`|1| 
+|`ast_disease` |0|
+|`press_disease`|0|
+|`heart_disease`|1|
+Table: Values of explanatory variables for the first observation
+
+
+
+* **XIA for the best prediction using Break Down Plots**
 
 Break-down plots show how the contribution of individual variables change the average model prediction to the prediction for observation.
 
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Brake down plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-brake_down_best_predict.PNG')
+```{r, echo=FALSE, fig.cap = "Break-Down plot for patient with the best prediction among people with results greater than 3000", fig.align="center", out.width = "1400"}
+htmltools::includeHTML("./images/05-brake_down_best_predict.html")
 ```
 
 The patient has 58 age,  which alone increase average total cost by 4303.195 \$ and the gender is female which decreases average total cost by 140. 72 \$.
@@ -152,23 +183,27 @@ Her status of education is unknown, what increase total cost.
  The fact that she didn't spend any night in the hospital decrease average total cost by 1343.271$. And also, she didn't benefit from home medical services decrease average total cost by 386.772 \$. 
 
 
-####  XIA for the best prediction using Shapley Values
+*  **XIA for the best prediction using Shapley Values**
 
 To remove the influence of the random ordering of the variables in brake down results we can compute an average value of the contributions.
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Shapley values plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-shap_best_predict.PNG')
+
+```{r, echo=FALSE, fig.cap = "Shapley Values plot for patient with the best prediction among people with results greater than 3000", fig.align="center", out.width = "1400"}
+htmltools::includeHTML("./images/05-shap_best_predict.html")
 ```
 
-The plot shows that the most important variables, from the point of view of selected observation is age, number of night spending in the hospital and diagnose high blood preasure.
-
-For this obserwation having age equals 58 decrease average total cost by 116.435 \$. Similar impact (decrease result by 116.25 \$ ) have the fact that she didn't spend any night in the hospital. Her status of education is unknown, what decrease average total cost by 104.521 \$.
-She is not diagnose the high blood preasure which increase average response by 113.134 \$.
-For this obserwation being a women increase  average total cost by 70.099 \$. 
+The plot shows that the most important variables, from the point of view of selected observation is 
+number of days in home protected by medical servises, asthma disease or arthesis disease.
 
 
+For this obserwation  number of days in home protected by medical servises equals 0 decreases average total cost by 158\$. A similar effect is achieved by the fact of not using outpatient visits, what decreases final medical cost by 134.79\$.This woman hasn't spent any night in the hospital, which reduces average total cost prediction by 47.11\$. 
+Unfortunately, the patient suffers from arthesis disease which increases average  medical costs by 80.9 \$, but fact, that she has no disease like asthma, decreases average response by 137.77\$.
 
-####  XIA for the best prediction using LIME
+As said before, analised patient is a woman, what decreases average response by 77.37\$. Her age is 58 what has positive impact on prediction and increase average total cost by 53.54\$. 
+
+
+*  **XIA for the best prediction using LIME**
+
 TODO: poprawic wykresy lime
 
  The key idea behind this method is to locally approximate a black-box Gradient-Boosting  model by a K-lasso interpretable model.
@@ -178,23 +213,49 @@ TODO: poprawic wykresy lime
 knitr::include_graphics('images/05-lime_best_predict.PNG')
 ```
 
-According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by $663. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 16534.29 \$.
-Patient analysed is not diagnose the high blood preasure which decrease response by 1308.27 \$.
-
+According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 727.59\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 19128.2 \$.
+Patient analysed is not diagnose the diabets disease,which decrease response by 1671.13 \$.
 Variables that increase the cost of medical services are the total number of office-based visits greater than 3 and the age of the analyzed person greater than 54.
 
 
 
+The first explanation concerns the observation for which the expenditure was small and the model overestimated it. Brake Down plot and Shap Values plot returns results that are intuitive. Below is a diagnostic plot model. For large cost values the rest is positive and for small ones negative, which suggests that the model in general works well, but it pulls the predictions to average. 
 
-#### XIA for for the best prediction
+
+```{r, cache=FALSE, out.width = "400",,fig.cap = "Model diagnostic plot ", fig.align="center",echo=FALSE}
+knitr::include_graphics('images/05-diagnosic_plot.PNG')
+```
+
+
+#### XIA for for the highest prediction
 
 Prediction of medical costs for second observation is 147178.5 \$ and is differed from the real value by 3721.5\$.
 
-####   XIA for the prediction with the largest cost using Break Down Plots
+| Variable |Value| 
+|--|--|----------------|
+|`hospital_nights`|52|
+|`phys_visits`|6|
+|`home_days`|0|
+|`feet_checked`|-1|
+|`non-phys_visits`|0|
+|`disposition` |11- hausehold |
+|`outpatient_visits`|1|
+|`age`|59|
+|`race`|1|
+|`sex`| 1| 
+|`edu`| 4 - bachelor's degree |
+|`diab_disease`|0|
+|`art_disease`|1| 
+|`ast_disease` |1|
+|`press_disease`|0|
+|`heart_disease`|1|
+Table: Values of explanatory variables for second observation
+
+*  **XIA for the prediction with the largest cost using Break Down Plots**
 
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "LIME plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-brake_down_highest_predict.PNG')
+```{r, echo=FALSE, fig.cap = "Brake-down plot for patient with the highest prediction medical cost", fig.align="center", out.width = "1400"}
+htmltools::includeHTML("./images/05-brake_down_high_prediction.html")
 ```
 
 
@@ -205,20 +266,23 @@ Despite he is not diagnose to diabets and high blood preasure which decrease fin
 
 
 
-####   XIA for the prediction with the largest cost using Shapley Values
+*  **XIA for the prediction with the largest cost using Shapley Values**
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Shapley Values plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-shap_highest_predict.PNG')
+```{r, echo=FALSE, fig.cap = "Shapley Values plot for patient with the highest prediction medical cost", fig.align="center", out.width = "1400"}
+htmltools::includeHTML("./images/05-shap_high_prediction.html")
 ```
 
 
 As we expected, for the observation that generated the highest predictions, most of the variables have an additive effect on the final result. 
-The graph shows that the greatest influence on the final value of the average prediction was in being male.
-
-Living in a household increases the average prediction by 18031\$. The fact of having heart disease, spending 52 nights in hospital and the total number of office-based visits equal to 6 also had a big positive impact on the result.
+The graph shows that the greatest influence on the final value of the average prediction is race, disposition and number of night in hospital.
 
 
-####   XIA for the prediction with the largest cost using LIME
+For this patient, the fact that he's a white man raises the average  estimates by 21213.64\$.
+Living in a household increases the average prediction by 17353.7\$. Spending 52 nights in hospital increase average response by 16483.7\$, likewise number of physical visits equals 6, raises average total prediction by 4518\$. 
+
+
+
+*   **XIA for the prediction with the largest cost using LIME**
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "LIME plot ", fig.align="center",echo=FALSE}
@@ -226,7 +290,7 @@ knitr::include_graphics('images/05-lime_highest_predict.PNG')
 ```
 
 The LIME method also returns a positive influence on the final prediction for most variables. 
-The chart shows that spending 52 nights in hospital increases treatment costs by 32360 \$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6074.66 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
+The chart shows that spending 52 nights in hospital increases treatment costs by 33032 \$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6477.8 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
 
 ####   XIA for both predictions using Ceteris Paribus Profiles
 
@@ -238,7 +302,7 @@ knitr::include_graphics('images/05-ct-buss-all.png')
 
 In the plot above we have selected features that behave differently between those two patients. In later subsections we will dive more into those differences.
 
-#####  Comparing differences between patients based on Sex.
+*  **Comparing differences between patients based on Sex**
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for SEX  ", fig.align="center",echo=FALSE}
@@ -248,7 +312,7 @@ knitr::include_graphics('images/05-ct-buss-SEX.png')
 
 As we can see, our explanation model tries to predict what would have happened if the patient would have a different sex And for the patient 1 there would be no difference in predicted value, but for patient 2 the change of sex implicates lowering or increase in predicted costs.
 
-#####  Comparing differences between patients based on age.
+*  **Comparing differences between patients based on age**
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for AGE  ", fig.align="center",echo=FALSE}
@@ -257,7 +321,7 @@ knitr::include_graphics('images/05-ct-buss-AGE.png')
 
 In this section we will investigate age. For patient 1 there is no influence on age on the expenses, but for patient 2 there is an influence of this variable. For patient 2 being around age of 60 and below age of 10 implicates a rise in predicted costs.
 
-#####  Comparing differences between patients based on number of nights associated with hospital discharges.
+*  **Comparing differences between patients based on number of nights associated with hospital discharges**
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for IPNGTDY1  ", fig.align="center",echo=FALSE}
@@ -376,14 +440,20 @@ In this case we can notice an interesting influence of the variable OBDRVY1. For
 
 ## Summary and conclusions 
 
-Zdanie, że wyjaśnialność daje dużo możliwości?
-
+Undoubtedly, explanatory methods open up new opportunities in the business sector as well as in the diagnostic model and exploration. 
 The data on which the analysis has been carried out covers the entire population of the United States of America. Depending on age, education, gender, and many other agents, people take different approaches to looking after their health. 
+
+The analyses presented in the above chapter have provided conclusions that may be useful in various areas. 
 
 (?) Rozważaliśmy ludzi zdrowych i chorych w różnym wieku? - Wnioski na podstawie instance level? (?)  
 The presented model shows that the frequency of visits to doctors as well as the length of hospitalization have the greatest influence on the forecasting of medical expenses. Indeed, medical problems are only an indirect factor.  
 
-(?)W podejściu biznesowym, na miejscu firmy ubezpieczeniowej warto podjąć próbę estymacji ilości dni w szpitalu czy wizyy na podstawie choroby czy danych demograficznych. Takie podejście według nas pozwoli na lepszą wycenę.. (?)
+(?)Explainability methods can certainly work in the business sector. 
+Case analysis at the instance level allowed to compare the behavior of the model for people with different characteristics. An interesting observation is undoubtedly the fact that the total medical cost was strongly influenced by a variable of the number of days in the hospital rather than the patient's demography or medical history itself. 
+Perhaps it would be worthwhile for financial institutions to try estimate the number of days spent in hospital to be more beneficial for their companies. 
+
+ 
+
 
 ## References
 Przemysław Biecek, Tomasz Burzykowski, *Explanatory Model Analysis: Explore, Explain and Examine Predictive Models*, https://pbiecek.github.io/ema/preface.html
