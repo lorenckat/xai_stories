@@ -357,7 +357,7 @@ As shown on the plot above, each value of the patient property influences a bit 
 
 ######  Comparing differences between patients for number of nights associated with hospital discharges
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for IPNGTDY1 ", fig.align="center",echo=FALSE}
+```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for hosp_nigths ", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-ct_hosp_nights.PNG')
 ```
 
@@ -365,7 +365,7 @@ For this property of our patients, we would like to show how the model responds,
 
 ######  Comparing differences between patients for variable if feet was checked for sores or irritations
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for DSFTNV5 ", fig.align="center",echo=FALSE}
+```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for feet_checked ", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-ct_feet_checked.PNG')
 ```
 
@@ -373,7 +373,7 @@ For the variable if of the feet of the patients was checked for sores or irritat
 
 ######  Comparing differences between patients for variable  of number of office-based physician visits.
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for OBDRVY1  ", fig.align="center",echo=FALSE}
+```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for phys_visits  ", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-ct_phys_visits.PNG')
 ```
 
