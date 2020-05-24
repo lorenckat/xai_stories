@@ -210,7 +210,7 @@ TODO: poprawic wykresy lime
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "LIME plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-lime_best_predict.PNG')
+htmltools::includeHTML('images/05-lime_best_predict.html')
 ```
 
 According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 727.59\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 19128.2 \$.
@@ -286,7 +286,7 @@ Living in a household increases the average prediction by 17353.7\$. Spending 52
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "LIME plot ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-lime_highest_predict.PNG')
+htmltools::includeHTML('images/05-lime_highest_predict.html')
 ```
 
 The LIME method also returns a positive influence on the final prediction for most variables. 
