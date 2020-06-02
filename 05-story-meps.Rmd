@@ -351,7 +351,7 @@ In this section we will investigate age. Here both patients are almost the same 
 *  **Comparing differences between patients based on number of nights associated with hospital discharges**
 
 
-```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for IPNGTDY1  ", fig.align="center",echo=FALSE}
+```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for hosp_nights  ", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-ct-buss-hosp_nights.png')
 ```
 
