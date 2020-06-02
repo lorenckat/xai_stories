@@ -472,7 +472,7 @@ In this chapter we will use Ceteris-paribus profiles for instance level explanat
 Here we present a plot, on which we list all variables that are different between patients and we will try to investigate, how the model behavior changes for each patient, when their properties change. One thing to be aware of, both patients have different predicted expenses, so we will be mainly interested in the curvature of the plots.
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for six variables ", fig.align="center",echo=FALSE}
-knitr::include_graphics('images/05-ct_paribus_1_2.PNG')
+knitr::include_graphics('images/05-ct_paribus_1_2.png')
 ```
 
 As shown on the plot above, each value of the patient property influences a bit differently the outcome of our model. Patient 2, who has higher expenses, has higher values on our plots, but the dynamics of the plots for both patients are very similar.
