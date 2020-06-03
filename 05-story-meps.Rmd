@@ -2,7 +2,7 @@
 
 *Authors:  Anna Kozioł (Warsaw University of Technology), Katarzyna Lorenc (Warsaw University of Technology), Piotr Podolski (University of Warsaw)*
 
-*Mentors:  Maciej Andrzejak (Affiliation 2), Alicja Jośko (Affiliation 1)*
+*Mentors:  Maciej Andrzejak (McKinsey & Company), Alicja Jośko (McKinsey & Company)*
 
 ## Introduction 
 
@@ -102,7 +102,7 @@ In the following section we will explain the Gradient Boosting model based on 16
 
 TODO: zaktualizowac wartosci R^2
 
-## Model Level Explainations
+## Model Level Exploration
 
 
 ### Permutation Variable Importances
@@ -128,7 +128,7 @@ knitr::include_graphics('images/05-pdp_hosp.png')
 Among patients who spent a few nights in the hospital, gender is not important for the amount of prediction. This rule begins to change after exceeding 30 nights.
 The PD profile for men has significantly higher values compared to the women's profile, despite the fact that variable `age` doesn't show much influence on the model. After exceeding  70 nights in the hospital, this variable does not affect the result returned by the model on average.
 
-##  Instance Level Explanations
+##  Instance Level Exploration
 
 ### Business approach
 
@@ -139,32 +139,33 @@ In this subsection we will try to show the application of explanatory methods in
 
 Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
 Such conclusions may also be useful for the patients, who have decided to pay for medical care themselves.
+In further consideration, the selected observations will be called Patient 1 and Patient 2.
+
+| Variable | Patient 1 | Patient 2 |
+|--------------|--------------|--------------|
+| `hospital_nights`| 0 | 52 |
+| `phys_visits`| 4 | 6 |
+| `home_days`| 0 | 0 |
+| `feet_checked`| -1 | -1 |
+| `non-phys_visits`| 1 | 0 |
+| `disposition`| 11-household | 11-household |
+| `outpatient_visits`| 0 | 1 |
+| `age`| 58 | 59 |
+| `race`| 1 | 1 |
+| `sex`| 2 | 1 |
+| `edu`| 7-other | 4-bachelor's degree |
+| `diab_disease`| 1 | 0 |
+| `art_disease` | 1 | 1 |
+| `ast_disease`| 0 | 1 |
+| `press_disease` | 0 | 0 |
+| `heart_disease` | 1 | 1 |
+| `real expenses` | 3882\$ | 143457\$  |
+| `prediction` | 3886.8\$| 147178.5\$ |
+
+Table: Values of explanatory variables for patients.
+
 
 #### XIA for the best prediction
-
-Prediction of medical costs for first observation is 3886.804\$ and is differed from the real value by 4.8\$. 
-The patient's characteristics are presented below.
-
-| Variable |Value|
-|--|--|----------------|
-|`hospital_nights`|0|
-|`phys_visits`| 4|
-|`home_days`|0|
-|`feet_checked`|-1|
-|`non-phys_visits`| 1|
-|`disposition` |11-household|
-|`outpatient_visits`|0|
-|`age`|58|
-|`race`|1|
-|`sex`| 2|
-|`edu`| 7-other|
-|`diab_disease`|1|
-|`art_disease`|1|
-|`ast_disease` |0|
-|`press_disease`|0|
-|`heart_disease`|1|
-Table: Values of explanatory variables for the first observation
-
 
 
 * **XIA for the best prediction using Break Down Plots**
@@ -228,27 +229,6 @@ knitr::include_graphics('images/05-diagnosic_plot.png')
 
 #### XIA for for the highest prediction
 
-Prediction of medical costs for second observation is 147178.5\$ and is differed from the real value by 3721.5\$.
-
-| Variable |Value|
-|--|--|----------------|
-|`hospital_nights`|52|
-|`phys_visits`|6|
-|`home_days`|0|
-|`feet_checked`|-1|
-|`non-phys_visits`|0|
-|`disposition` |11- household |
-|`outpatient_visits`|1|
-|`age`|59|
-|`race`|1|
-|`sex`| 1|
-|`edu`| 4 - bachelor's degree |
-|`diab_disease`|0|
-|`art_disease`|1|
-|`ast_disease` |1|
-|`press_disease`|0|
-|`heart_disease`|1|
-Table: Values of explanatory variables for second observation
 
 *  **XIA for the prediction with the largest cost using Break Down Plots**
 
@@ -293,29 +273,8 @@ The chart shows that spending 52 nights in hospital increases treatment costs by
 
 ####   XIA for both predictions using Ceteris Paribus Profiles
 
-In this chapter we will use Ceteris-paribus profiles for instance level explanations. Ceteris-paribus profiles show how the model response would change if a single variable is changed. So here we will be checking how would the model prediction change, if we change only one property of the patient and how it influences our model
+In this chapter we will use Ceteris-paribus profiles for instance level explainations. Ceteris-paribus profiles show how the model response would change if a single variable is changed. So here we will be checking how would the model prediction change, if we change only one property of the patient and how it influences our model.
 
-Here we will denote the patient with the largest cost predicted as Patient 2, and the patient with the best prediction as Patient 1.
-
-| Variable | Patient 1 | Patient 2 |
-|--------------|--------------|--------------|
-| `hospital_nights`| 0 | 52 |
-| `phys_visits`| 4 | 6 |
-| `home_days`| 0 | 0 |
-| `feet_checked`| -1 | -1 |
-| `non-phys_visits`| 1 | 0 |
-| `disposition`| 11 | 11 |
-| `outpatient_visits`| 0 | 1 |
-| `age`| 58 | 59 |
-| `race`| 1 | 1 |
-| `sex`| 2 | 1 |
-| `edu`| 7 | 4 |
-| `diab_disease`| 1 | 0 |
-| `art_disease` | 1 | 1 |
-| `ast_disease`| 0 | 1 |
-| `press_disease` | 0 | 0 |
-| `heart_disease` | 1 | 1 |
-Table: Values of explanatory variables for both patients
 
 In the plot below we have selected features that behave differently between those two patients. Those features are `sex`, `age`, `hosp_nights`, `phys_visits`, `feet_checked` and `outpatient_visits`.
 
@@ -367,19 +326,19 @@ Here we will try to show the results of explanatory analysis methods for selecte
 | `home_days`| 0 | 0 |
 | `feet_checked`| 2 | -1 |
 | `non-phys_visits`| 0 | 6 |
-| `disposition`| 11 | 11 |
+| `disposition`| 11-household | 11-household |
 | `outpatient_visits`| 0 | 3 |
 | `age`| 71 | 34 |
 | `race`| 2 | 1 |
 | `sex`| 1 | 2 |
-| `edu`| 1 | 1 |
+| `edu`| 1-no degree | 1-no degree |
 | `diab_disease`| 1 | 0 |
 | `art_disease` | 1 | 0 |
 | `ast_disease`| 0 | 0 |
 | `press_disease` | 1 | 0 |
 | `heart_disease` | 1 | 0 |
-| `real expenses` | 2263 | 16268 |
-| `prediction` | 8779 | 24373 |
+| `real expenses` | 2263\$ | 16268\$ |
+| `prediction` | 8779\$ | 24373\$ |
 Table: A review of selected variables
 
 So as in table above we will investigate 2 patients, where one is of age 71 and with several illnesses, where the second one is of age of 34, different sex and without illnesses.
@@ -508,12 +467,15 @@ The data on which the analysis has been carried out covers the entire population
 
 The analyses presented in the above chapter have provided conclusions that may be useful in various areas.
 
-(?) Rozważaliśmy ludzi zdrowych i chorych w różnym wieku? - Wnioski na podstawie instance level? (?)
-The presented model shows that the frequency of visits to doctors as well as the length of hospitalization have the greatest influence on the forecasting of medical expenses. Indeed, medical problems are only an indirect factor.  
+Model level exploration showed, that it is worth to study the influence of variables on each other. In our case, although the sex is practically insignificant, it has very much influenced the most important variable, almost twice.  
 
-(?)Explainability methods can certainly work in the business sector.
-Case analysis at the instance level allowed to compare the behavior of the model for people with different characteristics. An interesting observation is undoubtedly the fact that the total medical cost was strongly influenced by a variable of the number of days in the hospital rather than the patient's demography or medical history itself.
-Perhaps it would be worthwhile for financial institutions to try estimate the number of days spent in hospital to be more beneficial for their companies.
+Explainability methods can certainly work in the business sector.
+Case analysis at the instance level allowed to compare the behavior of the model for people with different characteristics. An interesting observation is undoubtedly the fact, that the total medical cost was strongly influenced by a variable of the number of days in the hospital, rather than the patient's demography or medical history itself.
+Perhaps, it would be worthwhile for financial institutions to make two-stage analysis to estimate final result. First is to estimate  the number of days spent in hospital or at home with illness based on demographic factors and medical history.The second is, to use of these results for further calculations. It could contribute to a more accurate assessment of the costs generated and be more beneficial for companies.  
+
+Explanation methods have helped to understand why the model often overestimates observations and to diagnose that the model pulls observations to average. This has facilitated further interpretation of the results.   
+
+We also paid attention to people who differ in their state of health and age. In this case too, the number of visits to the hospital turned out to affect the outcome. Nevertheless, for these observations, the health condition also had a strong impact, both for the young and the elderly. The explanatory methods at the instance level gave the picture that people care about their health differently.
 
 
 
