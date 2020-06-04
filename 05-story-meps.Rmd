@@ -102,7 +102,7 @@ In the following section we will explain the Gradient Boosting model based on 16
 
 TODO: zaktualizowac wartosci R^2
 
-## Model Level Exploration
+## Model Level Explainations
 
 
 ### Permutation Variable Importances
@@ -128,7 +128,17 @@ knitr::include_graphics('images/05-pdp_hosp.png')
 Among patients who spent a few nights in the hospital, gender is not important for the amount of prediction. This rule begins to change after exceeding 30 nights.
 The PD profile for men has significantly higher values compared to the women's profile, despite the fact that variable `age` doesn't show much influence on the model. After exceeding  70 nights in the hospital, this variable does not affect the result returned by the model on average.
 
-##  Instance Level Exploration
+##  Instance Level Explanations
+
+### Business approach
+
+In this subsection we will try to show the application of explanatory methods in the business approach. Selected observations are:
+
+1. the person with the best estimated cost among people with results greater than 3000,
+2. the person for whom the model predicted the highest cost of all.
+
+Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
+Such conclusions may also be useful for the patients themselves, who have decided to pay for medical care themselves.
 
 ### Business approach
 
@@ -148,12 +158,12 @@ In further consideration, the selected observations will be called Patient 1 and
 | `home_days`| 0 | 0 |
 | `feet_checked`| -1 | -1 |
 | `non-phys_visits`| 1 | 0 |
-| `disposition`| 11-household | 11-household |
+| `disposition`| 11 | 11 |
 | `outpatient_visits`| 0 | 1 |
 | `age`| 58 | 59 |
 | `race`| 1 | 1 |
 | `sex`| 2 | 1 |
-| `edu`| 7-other | 4-bachelor's degree |
+| `edu`| 7 | 4 |
 | `diab_disease`| 1 | 0 |
 | `art_disease` | 1 | 1 |
 | `ast_disease`| 0 | 1 |
@@ -167,7 +177,6 @@ Table: Values of explanatory variables for patients.
 
 #### XIA for the best prediction
 
-
 * **XIA for the best prediction using Break Down Plots**
 
 Break-down plots show how the contribution of individual variables change the average model prediction to the prediction for observation.
@@ -177,11 +186,11 @@ Break-down plots show how the contribution of individual variables change the av
 htmltools::includeHTML("images/05-brake_down_best_predict.html")
 ```
 
-The patient has 58 age,  which alone increase average total cost by 4303.195\$ and the gender is female which decreases average total cost by 140.72\$.
+The patient has 58 age,  which alone increase average total cost by 4303.195\$ and the gender is female which decreases average total cost by 140. 72\$.
 Her total number of office-based visits is 4, which increase average total cost by 574.177\$.
 She suffers from arthritis what increase average total cost by 677.868\$  but she is not diagnose to diabets, astma or high blood preasure which decrease final result.
 Her status of education is unknown, what increase total cost.
- The fact that she didn't spend any night in the hospital decrease average total cost by 1343.271\$. And also, she didn't benefit from home medical services decrease average total cost by 386.772\$. 
+ The fact that she didn't spend any night in the hospital decrease average total cost by 1343.271$. And also, she didn't benefit from home medical services decrease average total cost by 386.772\$. 
 
 
 *  **XIA for the best prediction using Shapley Values**
@@ -198,13 +207,14 @@ number of days in home protected by medical servises, asthma disease or arthesis
 
 
 For this obserwation  number of days in home protected by medical servises equals 0 decreases average total cost by 158\$. A similar effect is achieved by the fact of not using outpatient visits, what decreases final medical cost by 134.79\$.This woman hasn't spent any night in the hospital, which reduces average total cost prediction by 47.11\$.
-Unfortunately, the patient suffers from arthesis disease which increases average  medical costs by 80.9\$, but fact, that she has no disease like asthma, decreases average response by 137.77\$.
+Unfortunately, the patient suffers from arthesis disease which increases average  medical costs by 80.9 \$, but fact, that she has no disease like asthma, decreases average response by 137.77\$.
 
 As said before, analised patient is a woman, what decreases average response by 77.37\$. Her age is 58 what has positive impact on prediction and increase average total cost by 53.54\$.
 
 
 *  **XIA for the best prediction using LIME**
 
+TODO: poprawic wykresy lime
 
  The key idea behind this method is to locally approximate a black-box Gradient-Boosting  model by a K-lasso interpretable model.
 
@@ -213,10 +223,10 @@ As said before, analised patient is a woman, what decreases average response by 
 htmltools::includeHTML('images/05-lime_best_predict.html')
 ```
 
-According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 725.64\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 14072.46\$.
-Having no outpatient visits also reduces final result by 4342.74\$.
-Patient analysed is not diagnose the diabets disease,which decrease response by 1518.18\$.
+According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 727.59\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 19128.2\$.
+Patient analysed is not diagnose the diabets disease,which decrease response by 1671.13\$.
 Variables that increase the cost of medical services are the total number of office-based visits greater than 3 and the age of the analyzed person greater than 54.
+
 
 
 The first explanation concerns the observation for which the expenditure was small and the model overestimated it. Brake Down plot and Shap Values plot returns results that are intuitive. Below is a diagnostic plot model. For large cost values the rest is positive and for small ones negative, which suggests that the model in general works well, but it pulls the predictions to average.
@@ -229,7 +239,6 @@ knitr::include_graphics('images/05-diagnosic_plot.png')
 
 #### XIA for for the highest prediction
 
-
 *  **XIA for the prediction with the largest cost using Break Down Plots**
 
 
@@ -239,7 +248,7 @@ htmltools::includeHTML("images/05-brake_down_high_prediction.html")
 
 
 The patient spending 52 nights in hospital, which increase average total cost by 4304.195\$. 
-Having 59 age, increase average total cost by 16986 \$ and the fact that gender is male increase average total cost by 15105\$.
+Having 59 age, increase average total cost by 16986\$ and the fact that gender is male increase average total cost by 15105\$.
 His status of education is bechelor degree, what increase total cost 1887\$.
 Despite he is not diagnose to diabets and high blood preasure which decrease final result, he suffers from heart disease which also decrese avarage response.
 
@@ -256,7 +265,7 @@ As we expected, for the observation that generated the highest predictions, most
 The graph shows that the greatest influence on the final value of the average prediction is race, disposition and number of night in hospital.
 
 
-For this patient, the fact that he's a white man raises the average estimates by 21213.64\$.
+For this patient, the fact that he's a white man raises the average  estimates by 21213.64\$.
 Living in a household increases the average prediction by 17353.7\$. Spending 52 nights in hospital increase average response by 16483.7\$, likewise number of physical visits equals 6, raises average total prediction by 4518\$.
 
 
@@ -269,11 +278,11 @@ htmltools::includeHTML('images/05-lime_highest_predict.html')
 ```
 
 The LIME method also returns a positive influence on the final prediction for most variables. 
-The chart shows that spending 52 nights in hospital increases treatment costs by 38817 \$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6866.85 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
+The chart shows that spending 52 nights in hospital increases treatment costs by 33032\$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6477.8 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
 
 ####   XIA for both predictions using Ceteris Paribus Profiles
 
-In this chapter we will use Ceteris-paribus profiles for instance level explainations. Ceteris-paribus profiles show how the model response would change if a single variable is changed. So here we will be checking how would the model prediction change, if we change only one property of the patient and how it influences our model.
+In this chapter we will use Ceteris-paribus profiles for instance level explanations. Ceteris-paribus profiles show how the model response would change if a single variable is changed. So here we will be checking how would the model prediction change, if we change only one property of the patient and how it influences our model
 
 
 In the plot below we have selected features that behave differently between those two patients. Those features are `sex`, `age`, `hosp_nights`, `phys_visits`, `feet_checked` and `outpatient_visits`.
@@ -287,7 +296,7 @@ What can be observed is that the plots for Patient 2 are higher on the expenses 
 
 In later subsections we will dive more into those differences.
 
-*  **Comparing differences between patients based on Sex**
+*  **Comparing differences between patients based on sex**
 
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for SEX  ", fig.align="center",echo=FALSE}
@@ -295,7 +304,7 @@ knitr::include_graphics('images/05-ct-buss-SEX.png')
 ```
 
 
-As we can see, our explanation model tries to predict what would have happened if the patient would have a different sex And for the patient 1 there would be no difference in predicted value, but for patient 2 the change of sex implicates lowering or an increase in predicted costs. This means, that if there would exists a different patient with similar as patient 2 symptoms and attributes but with different sex, the predicted cost would be different.
+As we can see, our explanation model tries to predict what would have happened if the patient would have a different sex. For patient 1 there would be no difference in the predicted value, but for patient 2 the change of sex implicates reduction or an increase in predicted costs. This means, that if there would exist a different patient with similar as patient 2 symptoms and attributes but with different sex, the predicted cost would be different.
 
 *  **Comparing differences between patients based on age**
 
@@ -304,7 +313,7 @@ As we can see, our explanation model tries to predict what would have happened i
 knitr::include_graphics('images/05-ct-buss-AGE.png')
 ```
 
-In this section we will investigate age. Here both patients are almost the same age, 58 and 59 respectively for Patient 1 and Patient 2. For patient 1 there is no influence on age on the expenses, but for patient 2 there is an influence of this variable on predicted expenses. For patient 2 being around age of 60 and below age of 10 implicates a rise in predicted costs and for different possible ages it is almost constant. This means that for a patient with similar attributes as Patient 2, being around age 60 and below age of 10 implicates higher costs in medical expenses, according to our model.
+In this section we will investigate age. Here both patients are almost the same age, 58 and 59 respectively for Patient 1 and Patient 2. For patient 1 there is no influence of age on the expenses, but for patient 2 there is an influence of this variable on predicted expenses. For patient 2 being around age of 60 and below age of 10 implicates a rise in predicted costs and for different possible ages it is almost constant. This means that for a patient with similar attributes as Patient 2, being around age 60 and below age of 10 implicates higher medical expenses, according to our model.
 
 *  **Comparing differences between patients based on number of nights associated with hospital discharges**
 
@@ -313,11 +322,11 @@ In this section we will investigate age. Here both patients are almost the same 
 knitr::include_graphics('images/05-ct-buss-hosp_nights.png')
 ```
 
-On the plot above for variable `hosp_nights` both patients behave similary, but with different sensitivity. Patient 2, because of higher costs is more sensitive in changes of the number of nights associated with hospital discharges. We can notice here, that `hosp_nights` equal to 0 implicates that the expenses are also equal to 0. With the increase of `hosp_nights` the expected expenses also rise until value of `hosp_nights` equal to 100, then expenses are constant. It is worth mensioning that not always `hosp_nights` equal to 0 mean that there are no expenses.
+On the plot above for variable `hosp_nights`, both patients behave similarly, but with a different sensitivity. Patient 2, because of higher costs, is more sensitive in changes of the number of nights associated with hospital discharges. We can observe here, that `hosp_nights` equal to 0 implicates that the expenses are also equal to 0. With the increase of `hosp_nights` the expected expenses also rise until value of `hosp_nights` equal to 100, then expenses are constant. It is worth mentioning that not always `hosp_nights` equal to 0 means that there are no expenses.
 
 ###  Instance Level Explanations - instance specific approach
 
-Here we will try to show the results of explanatory analysis methods for selected instances of data, that is for specifically selected different people with different background, race, age and sex. The main idea behind this is to see how the model responses are different for different gender, race and age and which variables influence the model for each patient.
+Here we will try to show the results of explanatory analysis methods for selected instances of data, that is for specifically selected different people with different backgrounds, races, age and sex. The main idea behind this is to see how the model responses are different for different gender, race and age and which variables influence the model for each patient.
 
 | Variable | Patient 1 | Patient 2 |
 |--------------|--------------|--------------|
@@ -326,12 +335,12 @@ Here we will try to show the results of explanatory analysis methods for selecte
 | `home_days`| 0 | 0 |
 | `feet_checked`| 2 | -1 |
 | `non-phys_visits`| 0 | 6 |
-| `disposition`| 11-household | 11-household |
+| `disposition`| 11 | 11 |
 | `outpatient_visits`| 0 | 3 |
 | `age`| 71 | 34 |
 | `race`| 2 | 1 |
 | `sex`| 1 | 2 |
-| `edu`| 1-no degree | 1-no degree |
+| `edu`| 1 | 1 |
 | `diab_disease`| 1 | 0 |
 | `art_disease` | 1 | 0 |
 | `ast_disease`| 0 | 0 |
@@ -345,7 +354,7 @@ So as in table above we will investigate 2 patients, where one is of age 71 and 
 
 ####  XIA for Patient 1
 
-For this patient our model had predicted expenses equal to 8779\$, where the real expenses were 2263\$. This means that for this observation our model overestimated the expenses by 6000$.
+For this patient our model had predicted expenses equal to 8779\$, where the real expenses were 2263\$. This means that for this observation our model overestimated the expenses by 6516$.
 
 *  **XIA for Patient 1 using Break Down Plots**
 
@@ -355,11 +364,11 @@ Here we will be showing explanations using Break-down plots and explain the cont
 htmltools::includeHTML("images/05-bd_1.html")
 ```
 
-The first patient is of age 71, which in comparison to previous explanations should have significant impact on the prediction but not in this case. For this patient age increased the predicted expenses only by 141$. 
+The first patient is of age 71. The age variable in comparison to previous explanations should have significant impact on the prediction but not in this case. For this case, patients age increased the predicted expenses only by 141$. 
 
-The biggest influence on the prediction has variable `phys_visits`, which is the number of office-based physician visits and it alone was responsible for 4300\$ of expenses. Also diabetes and an `feet_checked` (indicator whether the respondent reported having his or her feet checked for sores or irritations) have positive influence on the predicted expenses. These two observations increased the predicted cost bo 6000\$. 
+The biggest influence on the prediction has variable `phys_visits`, which is the number of office-based physician visits. It alone was responsible for 4300\$ of expenses. Also diabetes and an `feet_checked` (indicator whether the respondent reported having his or her feet checked for sores or irritations) have positive influence on the predicted expenses. These two observations increased the predicted cost bo 6000\$. 
 
-The variables `hospital_nights`, `non-phys_visits` and `edu` have most significantly negative influence on the prediction and lowered the predicted expenses by 2400\$. The reason behind this might be that our observation has 0 `hospital_nights`.
+Variables `hospital_nights`, `non-phys_visits` and `edu` have most significantly negative influence on the prediction and lowered the predicted expenses by 2400\$. The reason behind this, might be that our observation has 0 `hospital_nights`.
 
 *  **XIA for Patient 1 using Shapley Values**
 
@@ -367,9 +376,9 @@ The variables `hospital_nights`, `non-phys_visits` and `edu` have most significa
 htmltools::includeHTML("images/05-shap_1.html")
 ```
 
-We can run explanatory analysis using shaplay values for those patients. For Patient 1, all observations apart from `home_disease_days` have positive influence on the predicted value.
+We can run explanatory analysis using shapley values for those patients. For Patient 1, all observations apart from `home_disease_days` have positive influence on the predicted value.
 
-Top three variables with the biggest influence are diseases, and 3 after them are number of vists related variables. These top 3 diseases alone increased the predicted cost by 1800\$. Next 3 variables which indicated the Number of visits increased the expected cost by 1100\$. This is very interesting observation that is telling us, that diseases are the most important reasons why our medical expenses rise.
+Top three variables with the highest influence are diseases, and 3 after them are number of vists related variables. These top 3 diseases alone increased the predicted cost by 1800\$. Next 3 variables which indicated the number of visits, increased the expected cost by 1100\$. This is very interesting observation that is telling us, that diseases are the most important reasons why our medical expenses rise.
 
 *  **XIA for Patient 1 using LIME**
 
@@ -379,15 +388,15 @@ Here we are using the LIME method for the explanations by approximating a comple
 htmltools::includeHTML("images/05-lime1.html")
 ```
 
-In the plot above, we can observe that for Patient 1 prediction is heavily influenced by `hosp_nights` which is the number of nights in a hospital and it influences negatively the prediction, thus lowering the expected costs. The same is for `home_disease_days` variable, which also negatively influenced the prediction. The reason behind such a result could be that our patient has 0 nights in hospital and 0 home days. On the other hand number of office-based physician visits has a positive impact on the models prediction, causing the expenses to be higher.
+In the plot above, we can observe that for Patient 1, the prediction is heavily influenced by `hosp_nights`, which is the number of nights in a hospital. It influences negatively the prediction, thus lowering the expected costs. The same is for `home_disease_days` variable, which also negatively influenced the prediction. The reason behind such a result could be that our patient has 0 nights in a hospital and 0 home days. On the other hand, number of office-based physician visits has a positive impact on the models prediction, causing the expenses to be higher.
 
 ####  XIA for Patient 2
 
-For this patient our model had predicted expenses equal to 24373\$, where the real expenses were 16268\$. This means that for this observation our model overestimated the expenses by 8000$.
+For this patient our model had predicted expenses equal to 24373\$, where the real expenses were 16268\$. This means that for this observation our model overestimated the expenses by 8105$.
 
 *  **XIA for Patient 2 using Break Down Plots**
 
-Here we will be showing explanations using Break-down plots and explain the contribution of individual variables on the prediction. 
+Here we will be showing explanations using Break-down plots and explaining the contribution of individual variables on the prediction. 
 
 ```{r, echo=FALSE, fig.cap = "Break-Down plot for Patient 2", fig.align="center", out.width = "1400"}
 htmltools::includeHTML("images/05-bd_2.html")
@@ -397,7 +406,7 @@ The second patient is of age 34. In this case the most significant influence on 
 
 Other variables have very small or small but negative influence on the prediciton. 
 
-This is quite interesing, because the variables that are making the expenses go higher are pure number of visits in hospital or by some medical employees. 
+This is quite interesing, because the variables that are making the expenses to go higher are pure number of visits in hospital or by some medical employees. 
 
 Here in comparison with patient 1, `hospital_nights` variable has positive influence on predicted cost, where for patient 1 it was negative. This paient has `hospital_nights` greater then 0, which could be the reason behind such a change.
 
@@ -407,7 +416,7 @@ Here in comparison with patient 1, `hospital_nights` variable has positive influ
 htmltools::includeHTML("images/05-shap_2.html")
 ```
 
-We can run explanatory analysis using shaplay values for those patients. For Patient 1, all observations have positive influence on the predicted value. 
+We can run explanatory analysis using shapley values for those patients. For Patient 2, all observations have positive influence on the predicted value. 
 
 Here just as for the first patient, top two most important variables are diseases. There are also 2 other diseases with slightly smaller influence, but still a significant one. What is interesting here, `diab_disease` and `art_disease` being 0 influenced the result the most, where for patient 1 they were equal to 1 and were also in top influencial variables.
 
@@ -417,9 +426,9 @@ Here just as for the first patient, top two most important variables are disease
 htmltools::includeHTML("images/05-lime2.html")
 ```
 
-For Patient 2 explanations received using LIME method show us that number of nights in a hospital have the highest positive influence on the prediction. It means that number of nights in a hospital for this patient is making the medical expenses higher for him, while `home_disease_days` variable is making the expenses lower. Other variables like `phys_visits`, `non-phys_visits` and `outpatient_visits` influence the prediction making the expenses to rise. 
+For Patient 2, the explanations received using LIME method show us, that number of nights in a hospital have the highest positive influence on the prediction. It means that number of nights in a hospital for this patient is making the medical expenses higher for him, while `home_disease_days` variable is making the expenses lower. Other variables like `phys_visits`, `non-phys_visits` and `outpatient_visits` influence the prediction making the expenses to rise. 
 
-Such results are very natural and are easy to understand by anyone investigating such a prediction. We can also see a difference in comparison to the first patient, where number of nights in a  hospital were making the expenses lower. This could be also connected to the differences between patients, their age and illnesses.
+Such results are very natural and are easy to understand by anyone investigating such a prediction. We can also see a difference in comparison to the first patient, where number of nights in a  hospital were making the expenses lower, because he had 0 of them.
 
 ####  XIA for Patient 1 and Patient 2 using Ceteris Paribus Profiles
 
@@ -427,13 +436,13 @@ In this chapter we will use Ceteris-paribus profiles for instance level explanat
 
 *  **Comparing differences between model predictions for Patient 1 and 2 for diffenret properties**
 
-Here we present a plot, on which we list all variables that are different between patients and we will try to investigate, how the model behavior changes for each patient, when their properties change. One thing to be aware of, both patients have different predicted expenses, so we will be mainly interested in the curvature of the plots.
+Here we present a plot, on which we list all variables that are interesting to investigate. We will try to investigate, how the model behavior changes for each patient, when their properties change. One thing to be aware of, both patients have different predicted expenses, so we will be mainly interested in the curvature of the plots.
 
 ```{r, cache=FALSE, out.width = "1400",fig.cap = "Ceters Paribus plot for six variables ", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-ct_paribus_1_2.png')
 ```
 
-As shown on the plot above, each value of the patient property influences a bit differently the outcome of our model. Patient 2, who has higher expenses, has higher values on our plots, but the dynamics of the plots for both patients are very similar.
+As shown on the plot above, each value of the patient property influences a bit differently the outcome of our model. Patient 2, who has higher expenses, has higher values on our plots, but the dynamics of those plots for both patients are very similar.
 
 *  **Comparing differences between patients for number of nights associated with hospital discharges**
 
@@ -445,7 +454,7 @@ knitr::include_graphics('images/05-ct_hosp_nights.png')
 
 For this property of our patients, we would like to show how the model responds, when values of the number of nights associated with hospital discharges influences the predicted costs. 
 
-The number of nights influences the expenses for patient 1 and 2 similarly, but with different power. Patient 2, due to having a higher prediction of expenses is being influenced more, than patient 1, but with the same dynamic. This shows that our model treats both patients similarly.
+The number of nights influences the expenses for patient 1 and 2 similarly, but with different power. Patient 2, due to having a higher prediction of expenses is being influenced more than patient 1, but with the same dynamic. This shows that our model treats both patients similarly.
 
 
 *  **Comparing differences between patients for variable of number of office-based physician visits.**
@@ -476,7 +485,6 @@ Perhaps, it would be worthwhile for financial institutions to make two-stage ana
 Explanation methods have helped to understand why the model often overestimates observations and to diagnose that the model pulls observations to average. This has facilitated further interpretation of the results.   
 
 We also paid attention to people who differ in their state of health and age. In this case too, the number of visits to the hospital turned out to affect the outcome. Nevertheless, for these observations, the health condition also had a strong impact, both for the young and the elderly. The explanatory methods at the instance level gave the picture that people care about their health differently.
-
 
 
 
