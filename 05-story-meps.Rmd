@@ -148,16 +148,6 @@ In this subsection we will try to show the application of explanatory methods in
 2. the person for whom the model predicted the highest cost of all.
 
 Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
-Such conclusions may also be useful for the patients themselves, who have decided to pay for medical care themselves.
-
-### Business approach
-
-In this subsection we will try to show the application of explanatory methods in the business approach. Selected observations are:
-
-1. the person with the best estimated cost among people with results greater than 3000,
-2. the person for whom the model predicted the highest cost of all.
-
-Finding the value of characteristics that increase or decrease the final result, diagnostics of the direction of changes or oscillations of the result in case of change of characteristics describing a person may be valuable information for insurance companies or other payers for medical services.
 Such conclusions may also be useful for the patients, who have decided to pay for medical care themselves.
 In further consideration, the selected observations will be called Patient 1 and Patient 2.
 
@@ -166,19 +156,19 @@ In further consideration, the selected observations will be called Patient 1 and
 | `hospital_nights`| 0 | 52 |
 | `phys_visits`| 4 | 6 |
 | `home_days`| 0 | 0 |
-| `feet_checked`| -1 | -1 |
+| `feet_checked`| -1-inapplicable | -1-inapplicable |
 | `non-phys_visits`| 1 | 0 |
 | `disposition`| household | household |
 | `outpatient_visits`| 0 | 1 |
 | `age`| 58 | 59 |
-| `race`| 1 | 1 |
-| `sex`| 2 | 1 |
+| `race`| 1-white | 1-white |
+| `sex`| 2-female | 1-man |
 | `edu`| other | bachelor's degree |
-| `diab_disease`| 1 | 0 |
-| `art_disease` | 1 | 1 |
-| `ast_disease`| 0 | 1 |
-| `press_disease` | 0 | 0 |
-| `heart_disease` | 1 | 1 |
+| `diab_disease`| 1-yes | 0-no |
+| `art_disease` | 1-yes | 1-yes |
+| `ast_disease`| 0-no | 1-yes |
+| `press_disease` | 0-no | 0-no |
+| `heart_disease` | 1-yes | 1-yes |
 | `real expenses` | 3882\$ | 143457\$  |
 | `prediction` | 3886.8\$| 147178.5\$ |
 
@@ -196,7 +186,7 @@ Break-down plots show how the contribution of individual variables change the av
 htmltools::includeHTML("images/05-brake_down_best_predict.html")
 ```
 
-The patient has 58 age,  which alone increase average total cost by 4303.195\$ and the gender is female which decreases average total cost by 140. 72\$.
+The patient has 58 age,  which alone increase average total cost by 574.177\$ and the gender is female which decreases average total cost by 140. 72\$.
 Her total number of office-based visits is 4, which increase average total cost by 574.177\$.
 She suffers from arthritis what increase average total cost by 677.868\$  but she is not diagnose to diabets, astma or high blood preasure which decrease final result.
 Her status of education is unknown, what increase total cost.
@@ -216,7 +206,7 @@ The plot shows that the most important variables, from the point of view of sele
 number of days in home protected by medical servises, asthma disease or arthesis disease.
 
 
-For this obserwation  number of days in home protected by medical servises equals 0 decreases average total cost by 158\$. A similar effect is achieved by the fact of not using outpatient visits, what decreases final medical cost by 134.79\$.This woman hasn't spent any night in the hospital, which reduces average total cost prediction by 47.11\$.
+For this obserwation  number of days in home protected by medical servises equals 0 decreases average total cost by 158.37\$. A similar effect is achieved by the fact of not using outpatient visits, what decreases final medical cost by 134.79\$.This woman hasn't spent any night in the hospital, which reduces average total cost prediction by 47.11\$.
 Unfortunately, the patient suffers from arthesis disease which increases average  medical costs by 80.9 \$, but fact, that she has no disease like asthma, decreases average response by 137.77\$.
 
 As said before, analised patient is a woman, what decreases average response by 77.37\$. Her age is 58 what has positive impact on prediction and increase average total cost by 53.54\$.
@@ -224,7 +214,7 @@ As said before, analised patient is a woman, what decreases average response by 
 
 *  **XIA for the best prediction using LIME**
 
-TODO: poprawic wykresy lime
+
 
  The key idea behind this method is to locally approximate a black-box Gradient-Boosting  model by a K-lasso interpretable model.
 
@@ -233,10 +223,10 @@ TODO: poprawic wykresy lime
 htmltools::includeHTML('images/05-lime_best_predict.html')
 ```
 
-According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 727.59\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 19128.2\$.
-Patient analysed is not diagnose the diabets disease,which decrease response by 1671.13\$.
+According to the LIME method, the plot suggests that spending any night in hospital reduces the estimated cost by 725.64\$. Much greater, also the negative impact has a variable which telling that that patient didn't benefit from home medical services, which  total cost by 14072.46\$.
+Having no outpatient visits also reduces final result by 4342.74\$.
+Patient analysed is not diagnose the diabets disease,which decrease response by 1518.18\$.
 Variables that increase the cost of medical services are the total number of office-based visits greater than 3 and the age of the analyzed person greater than 54.
-
 
 
 The first explanation concerns the observation for which the expenditure was small and the model overestimated it. Brake Down plot and Shap Values plot returns results that are intuitive. Below is a diagnostic plot model. For large cost values the rest is positive and for small ones negative, which suggests that the model in general works well, but it pulls the predictions to average.
@@ -257,7 +247,7 @@ htmltools::includeHTML("images/05-brake_down_high_prediction.html")
 ```
 
 
-The patient spending 52 nights in hospital, which increase average total cost by 4304.195\$. 
+The patient spending 52 nights in hospital, which increase average total cost by 65749.48\$. 
 Having 59 age, increase average total cost by 16986\$ and the fact that gender is male increase average total cost by 15105\$.
 His status of education is bechelor degree, what increase total cost 1887\$.
 Despite he is not diagnose to diabets and high blood preasure which decrease final result, he suffers from heart disease which also decrese avarage response.
@@ -288,7 +278,7 @@ htmltools::includeHTML('images/05-lime_highest_predict.html')
 ```
 
 The LIME method also returns a positive influence on the final prediction for most variables. 
-The chart shows that spending 52 nights in hospital increases treatment costs by 33032\$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6477.8 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
+The chart shows that spending 52 nights in hospital increases treatment costs by 38817 \$. The total number of office-based visits greater than 3 also has a positive impact, increasing the prediction by 6866.85 \$. The age of a patient over 54 also significantly increases medical costs. Among the variables reducing treatment costs ,was the total number of days in home health care equal to 0.
 
 ####   XIA for both predictions using Ceteris Paribus Profiles
 
@@ -343,19 +333,19 @@ Here we will try to show the results of explanatory analysis methods for selecte
 | `hospital_nights`| 0 | 3 |
 | `phys_visits`| 12 | 8 |
 | `home_days`| 0 | 0 |
-| `feet_checked`| 2 | -1 |
+| `feet_checked`| 2-yes | -1-inapplicable |
 | `non-phys_visits`| 0 | 6 |
 | `disposition`| household | household |
 | `outpatient_visits`| 0 | 3 |
 | `age`| 71 | 34 |
-| `race`| 2 | 1 |
-| `sex`| 1 | 2 |
+| `race`| 2-black | 1-white |
+| `sex`| 1-man | 2-female |
 | `edu`| no degree | no degree |
-| `diab_disease`| 1 | 0 |
-| `art_disease` | 1 | 0 |
-| `ast_disease`| 0 | 0 |
-| `press_disease` | 1 | 0 |
-| `heart_disease` | 1 | 0 |
+| `diab_disease`| 1-yes | 0-no |
+| `art_disease` | 1-yes | 0-no |
+| `ast_disease`| 0-no | 0-no |
+| `press_disease` | 1-yes | 0-no |
+| `heart_disease` | 1-yes | 0-no |
 | `real expenses` | 2263\$ | 16268\$ |
 | `prediction` | 8779\$ | 24373\$ |
 Table: A review of selected variables
