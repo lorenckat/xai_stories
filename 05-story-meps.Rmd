@@ -1,4 +1,4 @@
-# Story Meps: eXplainable predictions for healthcare expenditures
+# Story Meps: Explainable predictions for healthcare expenditures
 
 *Authors:  Anna Kozioł (Warsaw University of Technology), Katarzyna Lorenc (Warsaw University of Technology), Piotr Podolski (University of Warsaw)*
 
@@ -50,22 +50,33 @@ knitr::include_graphics('images/05-y_val.png')
 
 
 
+## Model
+
+### Data
+[Agency of Healthcare Research and Quality](https://www.ahrq.gov/) provides an extensive database of medical expenses. Consequently, data set selection on which we will make further analysis was an important first step. We decided to choose the two latest panels. Expenditures for treatment that we will examine in the following chapter apply to the years 2015/2016 and 2016/2017. The selected dataset contains information on over 32,000 patients, and each of them is described by 3,700 variables. We attached great importance to choosing features that would be appropriate for the prediction. The most important criterion adopted is that the variable cannot relate to expenditure associated with any treatment. For this purpose, we looked through several hundred of them and selected 387 most suitable.
+
+As a part of the preprocessing, we removed records that were marked as *Inapplicable* in the expenditure column.  The number of people with such markings was 407, which is about 1% of the whole data set. The following figures show the distribution of the explained variable.
+
+
+```{r, cache=FALSE, out.width = "1400",fig.cap = "Distribution of medical expenses ", fig.align="center",echo=FALSE}
+knitr::include_graphics('images/05-y_val.png')
+```
+    
+
 ### Model
-Among the models we have trained, the best results were achieved by Gradient Boosting. Due to the characteristics of the explained variable, we decided to check the behavior of the model after applying the logarithmic transformation to expenses. We also checked whether the not inclusion of people without medical expenses would affect the model. Model hyperparameters have been tuned using [NNI](https://pypi.org/project/nni/) toolkit. To choose the best model, we compared the determination coefficient values. 
+Among the models we have trained, the best results were achieved by Gradient Boosting. Due to the characteristics of the explained variable, we decided to check the behavior of the model after applying the logarithmic transformation to expenses. In the case of modelling the expenditure logarithm, we also used translations by 1  to avoid undesirable values of the variable. We used [NNI](https://pypi.org/project/nni/) toolkit to find the best hyperparameters To choose the best model, we compared the determination coefficient values. 
 
-The table below shows the results of the experiments. To calculate the determination coefficient in column  *$R^2$ (logarithmically transformed expenses)*, we transformed logarithmically the values of expenses, and after training the model we returned to the original scale. 
+The table below shows the results of the experiments. To calculate the determination coefficient in column  *$R^2$ (log)*, we transformed logarithmically the values of expenses, and after training the model we returned to the original scale. 
 
 
 
-| Patients without expenses | Model | $R^2$ | $R^2$ (logarithmically transformed expenses) | 
-|----------------|-----------------------------------------------------------------------|------------------------------------------|--------------------------------------------------------|
-| included | Gradient Boosting | 0.50 | - |
-| included | Tuned Gradient Boosting | **0.55** | - |
-|not included | Gradient Boosting | 0.42 | 0.40 |
-|not included| Tuned Gradient Boosting | 0.49 | 0.49 |
+| Model | $R^2$ | $R^2$ (log) | 
+|-----------------------------------------------------------------------|------------|--------|
+| Gradient Boosting | 0.43 | 0.44 |
+| Tuned Gradient Boosting | **0.49** | 0.46 |
 Table: Values of the determination coefficient.
 
-The best fit relying on the determination coefficient was demonstrated by a Gradient Boosting, which included patients who did not incur treatment expenses. Then, as a compromise between the size of the model and its quality, we chose the 7 most important variables. For this purpose, we ranked the significance of the variables in the model and extracted those with the highest coefficient. 
+The best fit relying on the determination coefficient was demonstrated by a Gradient Boosting. Then, as a compromise between the size of the model and its quality, we chose the 7 most important variables. For this purpose, we ranked the significance of the variables in the model and extracted those with the highest coefficient. 
 
 ```{r, cache=FALSE, out.width = "400", fig.align="center",echo=FALSE}
 knitr::include_graphics('images/05-r2_no_features.png')
@@ -100,7 +111,6 @@ Table: A review of selected variables
 
 In the following section we will explain the Gradient Boosting model based on 16 variables presented in the table above. The coefficient of determination of the final model is 0.5
 
-TODO: zaktualizowac wartosci R^2
 
 ## Model Level Explainations
 
@@ -158,12 +168,12 @@ In further consideration, the selected observations will be called Patient 1 and
 | `home_days`| 0 | 0 |
 | `feet_checked`| -1 | -1 |
 | `non-phys_visits`| 1 | 0 |
-| `disposition`| 11 | 11 |
+| `disposition`| household | household |
 | `outpatient_visits`| 0 | 1 |
 | `age`| 58 | 59 |
 | `race`| 1 | 1 |
 | `sex`| 2 | 1 |
-| `edu`| 7 | 4 |
+| `edu`| other | bachelor's degree |
 | `diab_disease`| 1 | 0 |
 | `art_disease` | 1 | 1 |
 | `ast_disease`| 0 | 1 |
@@ -335,12 +345,12 @@ Here we will try to show the results of explanatory analysis methods for selecte
 | `home_days`| 0 | 0 |
 | `feet_checked`| 2 | -1 |
 | `non-phys_visits`| 0 | 6 |
-| `disposition`| 11 | 11 |
+| `disposition`| household | household |
 | `outpatient_visits`| 0 | 3 |
 | `age`| 71 | 34 |
 | `race`| 2 | 1 |
 | `sex`| 1 | 2 |
-| `edu`| 1 | 1 |
+| `edu`| no degree | no degree |
 | `diab_disease`| 1 | 0 |
 | `art_disease` | 1 | 0 |
 | `ast_disease`| 0 | 0 |
@@ -476,11 +486,11 @@ The data on which the analysis has been carried out covers the entire population
 
 The analyses presented in the above chapter have provided conclusions that may be useful in various areas.
 
-Model level exploration showed, that it is worth to study the influence of variables on each other. In our case, although the sex is practically insignificant, it has very much influenced the most important variable, almost twice.  
+Model-level exploration showed that it is worthwhile to study the impact of variables on each other, as this may show more complex relationships. In our case, the SEX variable, which doesn't show much impact affects the most important variable almost twice.
 
 Explainability methods can certainly work in the business sector.
 Case analysis at the instance level allowed to compare the behavior of the model for people with different characteristics. An interesting observation is undoubtedly the fact, that the total medical cost was strongly influenced by a variable of the number of days in the hospital, rather than the patient's demography or medical history itself.
-Perhaps, it would be worthwhile for financial institutions to make two-stage analysis to estimate final result. First is to estimate  the number of days spent in hospital or at home with illness based on demographic factors and medical history.The second is, to use of these results for further calculations. It could contribute to a more accurate assessment of the costs generated and be more beneficial for companies.  
+Perhaps, it would be worthwhile for financial institutions to make a two-stage analysis to estimate the final result. First is to estimate the number of days spent in hospital or at home with illness based on demographic factors and medical history. The second is, to use these results for further calculations. It could contribute to a more accurate assessment of the costs generated and be more beneficial for companies.  
 
 Explanation methods have helped to understand why the model often overestimates observations and to diagnose that the model pulls observations to average. This has facilitated further interpretation of the results.   
 
